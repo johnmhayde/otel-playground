@@ -1,4 +1,3 @@
-import json
 import logging
 import time
 import os
@@ -57,8 +56,8 @@ FastAPIInstrumentor.instrument_app(app)
 
 # Logging helper
 def log_json(message: str, **attributes):
-    log_body = {"message": message, **attributes}
-    logger.info(json.dumps(log_body),extra=attributes)
+    # item ids in the body are stripped by the collector before log_dedup
+    logger.info(message, extra=attributes)
 
 # Endpoints
 @app.get("/")
@@ -86,8 +85,7 @@ async def process_item(item_id: str):
         span.set_attribute("messaging.operation.type","receive")
         span.set_attribute("item.id",item_id)
         log_json(
-            "Reading item from Kafka",
-            item_id=item_id,
+            f"Reading item from Kafka: {item_id}",
             topic="orders",
         )
         # Simulate Kafka work
@@ -119,8 +117,7 @@ async def process_item(item_id: str):
             item_id,
         )
         log_json(
-            "Writing item to database",
-            item_id=item_id,
+            f"Writing item to database: {item_id}",
             table="orders",
         )
         # Simulate database work
@@ -132,8 +129,7 @@ async def process_item(item_id: str):
             },
         )
         log_json(
-            "Database write completed",
-            item_id=item_id,
+            f"Database write completed: {item_id}"
         )
 
     log_json(

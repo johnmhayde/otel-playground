@@ -18,7 +18,7 @@ export const options = {
     process: {
       executor: 'constant-arrival-rate',
       exec: 'processItem',
-      rate: 200,
+      rate: 500,
       timeUnit: '1m',
       duration: DURATION,
       preAllocatedVUs: 5,
