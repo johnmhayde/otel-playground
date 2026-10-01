@@ -10,3 +10,14 @@ http://localhost:3000/ Grafana LGTM frontend
 ```
 app -> otel-collector -> lgtm stack
 ```
+
+### k6
+`k6/load.js` generates steady traffic against the app to both `/` and `/process/{item_id}`.
+```
+k6 run k6/load.js
+```
+Values to tweak:
+- `rate` / `timeUnit` per scenario — request rate (currently per minute)
+- `DURATION` env var — test length (default `10m`), e.g. `k6 run -e DURATION=30m k6/load.js`
+- `BASE_URL` env var — target host (default `http://localhost:8000`)
+- `maxVUs` — raise if k6 warns about insufficient VUs (e.g. at higher rates)
