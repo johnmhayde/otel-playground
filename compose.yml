@@ -1,0 +1,42 @@
+services:
+
+  app:
+    build: ./src/
+    container_name: app
+    ports:
+      - "8000:8000"
+    environment:
+      OTEL_SERVICE_NAME: fastapi-otel-demo
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_EXPORTER_OTLP_PROTOCOL: grpc
+    depends_on:
+      - otel-collector
+    networks:
+      - observability
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    command:
+      - "--config=/etc/otelcol-contrib/config.yaml"
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - lgtm
+    networks:
+      - observability
+
+  lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: lgtm
+    ports:
+      - "3000:3000"
+    networks:
+      - observability
+
+networks:
+  observability:
+    driver: bridge
