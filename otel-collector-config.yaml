@@ -10,6 +10,12 @@ processors:
   batch:
     timeout: 1s
     send_batch_size: 1024
+  log_dedup:
+    interval: 10s
+    log_count_attribute: dedup_count
+    # only dedupe processing logs
+    # conditions:
+      # - 'IsMatch(log.body, ".*processing item:.*")'
 
 exporters:
   otlp:
@@ -30,6 +36,7 @@ service:
       receivers:
         - otlp
       processors:
+        - log_dedup
         - batch
       exporters:
         - otlp

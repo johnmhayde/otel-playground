@@ -76,8 +76,7 @@ async def root():
 @app.get("/process/{item_id}")
 async def process_item(item_id: str):
     log_json(
-        "Starting item processing",
-        item_id=item_id,
+        f"Starting processing item: {item_id}",
         endpoint="/process/{item_id}",
     )
     # Dummy Kafka read
@@ -138,8 +137,7 @@ async def process_item(item_id: str):
         )
 
     log_json(
-        "Finished processing item",
-        item_id=item_id,
+        f"Finished processing item: {item_id}",
         status="success",
     )
 
