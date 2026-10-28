@@ -1,5 +1,5 @@
+import asyncio
 import logging
-import time
 import os
 
 from fastapi import FastAPI
@@ -89,7 +89,7 @@ async def process_item(item_id: str):
             topic="orders",
         )
         # Simulate Kafka work
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
         span.add_event(
             "kafka message received",
             {
@@ -121,7 +121,7 @@ async def process_item(item_id: str):
             table="orders",
         )
         # Simulate database work
-        time.sleep(0.15)
+        await asyncio.sleep(0.15)
         span.add_event(
             "database write completed",
             {
